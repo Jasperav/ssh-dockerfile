@@ -6,4 +6,6 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-ci_runner = { git = "ssh://git@github.com/somesharedrepo.git", version = "0.0.1" }
+tokio = { version = "1.21.2", features = ["full"] }
+tokio-tungstenite = "0.17.2"
+warp = "*"

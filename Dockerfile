@@ -1,15 +1,13 @@
-FROM rust:1.65 AS builder
-
-ENV CARGO_NET_GIT_FETCH_WITH_CLI=true
+# Use create_docker_image.bash to create a new build
+# https://github.com/rust-lang/cargo/issues/10781#issuecomment-1163829239
+FROM rustlang/rust:nightly-bullseye AS builder
 
 WORKDIR app
+
 COPY . .
-RUN mkdir -p /root/.ssh
-RUN ssh-keyscan github.com >> /root/.ssh/known_hosts
+RUN cargo build --bin hello -Z sparse-registry
 
-RUN --mount=type=ssh cargo build --release
+FROM debian:11.5
+COPY --from=builder ./app/target/debug/hello .
 
-FROM debian:buster-slim
-COPY --from=builder ./target/release/docker ./target/release/docker
-
-CMD ["./release/server"]
+CMD ["./hello"]
